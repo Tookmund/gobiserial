@@ -92,10 +92,7 @@ static bool debug;
 
 // DBG macro
 #define DBG( format, arg... ) \
-   if (debug == 1)\
-   { \
-      printk( KERN_INFO "GobiSerial::%s " format, __FUNCTION__, ## arg ); \
-   } \
+      printk( KERN_WARNING "GobiSerial::%s " format, __FUNCTION__, ## arg );
 
 /*=========================================================================*/
 // Function Prototypes
@@ -619,7 +616,7 @@ int GobiOpen(
       }
       if (bytesWrote != sizeof( startMessage ))
       {
-         DBG( "invalid write size %d, %lu\n",
+         DBG( "invalid write size %d, %u\n",
               bytesWrote,
               sizeof( startMessage ) );
          return -EIO;
@@ -697,7 +694,7 @@ void GobiClose( struct usb_serial_port * pPort )
       }
       if (bytesWrote != sizeof( stopMessage ))
       {
-         DBG( "invalid write size %d, %lu\n",
+         DBG( "invalid write size %d, %u\n",
               bytesWrote,
               sizeof( stopMessage ) );
       }
@@ -916,10 +913,11 @@ RETURN VALUE:
 static int __init GobiInit( void )
 {
    int nRetval = 0;
+   DBG("nRetval is %d, should be 0",nRetval);
    gpClose = NULL;
-
+   DBG("gpClose is %p, should be NULL",gpClose);
    gGobiDevice.num_ports = NUM_BULK_EPS;
-
+   DBG("num_ports is %d, should be 1", gGobiDevice.num_ports);
    // Registering driver to USB serial core layer
 #if (LINUX_VERSION_CODE < KERNEL_VERSION( 3,4,0 ))
       nRetval = usb_serial_register( &gGobiDevice );
